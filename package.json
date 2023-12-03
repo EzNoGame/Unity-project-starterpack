@@ -1,0 +1,13 @@
+{
+    "name": "com.eddy.project-starter-pack",
+    "version": "1.0.0",
+    "displayName": "Eddie's Project Starter Pack",
+    "description": "A starter package for all the games",
+    "unity":"2022.3",
+    "dependencies": {},
+    "keywords": ["starter"],
+    "author": {
+        "name": "Eddie Zhang",
+        "email": "ez041126@gmail.com"
+    }
+}
