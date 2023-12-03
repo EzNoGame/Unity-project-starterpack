@@ -36,13 +36,11 @@ public class MyButton : ClickSoundBehaviour
         state = _interactable ? ButtonState.Onclick : ButtonState.Idle;
     }
 
-
     public virtual void Awake()
     {
         _animator = GetComponent<Animator>();
         _initColor = GetComponentInChildren<SpriteRenderer>().color;
     }
-
 
     public void SetInteractable(bool value)
     {
