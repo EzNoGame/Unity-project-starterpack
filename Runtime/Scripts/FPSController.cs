@@ -1,8 +1,5 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 [RequireComponent(typeof(CharacterController), typeof(Rigidbody))]
 public class FPSController : Singleton<FPSController>
@@ -11,7 +8,7 @@ public class FPSController : Singleton<FPSController>
     [SerializeField]
     private float _jumpAcceleration = 25f;
     [SerializeField]
-    private float _horizontalSpeed = 5f;
+    private float _walkSpeed = 5f, _sprintSpeed = 10f;
     [SerializeField, Header("in second, how many time can player still jump after leaving a platform")]
     private float _kyoteTime = 0.5f;
     [SerializeField, Header("in second, how early can player input jump before touching ground for that instruction to activated")]
@@ -22,18 +19,16 @@ public class FPSController : Singleton<FPSController>
     private float _accThreshold = 0.7f;
     [SerializeField]
     private Transform _orientation;
-
     private Vector3 _horizontalInput;
     private bool _jumpInput;
     private CharacterController _cc;
     private float _verticalVelocity;
     private Vector3 _movement;
     private float _kyoteTimer, _preJumpTimer, _jumpWindowTimer;
-    private bool _isHorizontallyMoving;
 
 
     public float JumpAcc => _jumpAcceleration;
-    public float HorizontalMaxSpeed => _horizontalSpeed;
+    public float HorizontalMaxSpeed => _walkSpeed;
 
 
     void Start()
@@ -43,7 +38,6 @@ public class FPSController : Singleton<FPSController>
         _jumpInput = false;
 
         _verticalVelocity = 0f;
-        _isHorizontallyMoving = false;
 
         _kyoteTimer = _kyoteTime;
         _preJumpTimer = _preJumpMaxTime;
@@ -56,10 +50,6 @@ public class FPSController : Singleton<FPSController>
         HandleInput();
         CalculateMovement();
         _cc.Move(_movement * Time.deltaTime);
-        if(transform.position.y < 0)
-        {
-            Debug.Log(transform.position);
-        }
     }
 
     void JumpCountDown()
@@ -101,9 +91,7 @@ public class FPSController : Singleton<FPSController>
     void HandleInput()
     {
         Vector2 input = VerticalInputThreashHold();
-        Debug.Log(input);
         _horizontalInput = input.x * _orientation.right +  input.y * _orientation.forward;
-
 
         _jumpInput = Input.GetButtonDown("Jump");
 
@@ -149,7 +137,10 @@ public class FPSController : Singleton<FPSController>
             }
         }
 
-        _movement = new Vector3(_horizontalInput.x*_horizontalSpeed, _verticalVelocity, _horizontalInput.z*_horizontalSpeed);
+        _movement = new Vector3(
+            _horizontalInput.x*(Input.GetKey(KeyCode.LeftShift)?_walkSpeed:_sprintSpeed), 
+            _verticalVelocity, 
+            _horizontalInput.z*(Input.GetKey(KeyCode.LeftShift)?_walkSpeed:_sprintSpeed));
 
     }
 }

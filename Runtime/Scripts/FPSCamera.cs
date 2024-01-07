@@ -7,8 +7,9 @@ public class FPSCamera : MonoBehaviour {
 
     [SerializeField, Header("transform in player to sync the rotation with camera")]
     private Transform _orientation;
+    
     [SerializeField, Header("transform in player to keep track the pos of camera")]
-    private GameObject _cameraHolder;
+    private Transform _cameraHolder;
 
     private float _xRotation, _yRotation;
 
