@@ -4,40 +4,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(CharacterController))]
+[RequireComponent(typeof(CharacterController), typeof(Rigidbody))]
 public class FPSController : Singleton<FPSController>
 {
     [Header("Velocity Controll")]
     [SerializeField]
-    private float _jumpAcc = 15f;
-
+    private float _jumpAcceleration = 25f;
     [SerializeField]
     private float _horizontalSpeed = 5f;
-    
-    [SerializeField]
-    private float _kyoteMaxTime = 0.5f;
-    [SerializeField]
+    [SerializeField, Header("in second, how many time can player still jump after leaving a platform")]
+    private float _kyoteTime = 0.5f;
+    [SerializeField, Header("in second, how early can player input jump before touching ground for that instruction to activated")]
     private float _preJumpMaxTime = 0.5f;
+    [SerializeField, Header("in second, how long can player hold jump to jump higher")]
+    private float _jumpWindow = 0.3f;
+    [SerializeField, Range(0f,0.99f), Header("in precentage, how fast will the character react to horizontal input")]
+    private float _accThreshold = 0.7f;
     [SerializeField]
-    private float _jumpWindowMax = 0.3f;
-    private float _kyoteTimer, _preJumpTimer, _jumpWindow;
-
-    [SerializeField, Range(0.0f,1.0f)]
-    private float _accThreshold = 0.1f;
-
-    [SerializeField, Header("orientation")]
     private Transform _orientation;
 
     private Vector3 _horizontalInput;
     private bool _jumpInput;
-
-    public float JumpAcc => _jumpAcc;
-    public float HorizontalMaxSpeed => _horizontalSpeed;
-
     private CharacterController _cc;
     private float _verticalVelocity;
-    private Vector2 _horizontalVelocity;
     private Vector3 _movement;
+    private float _kyoteTimer, _preJumpTimer, _jumpWindowTimer;
+    private bool _isHorizontallyMoving;
+
+
+    public float JumpAcc => _jumpAcceleration;
+    public float HorizontalMaxSpeed => _horizontalSpeed;
+
 
     void Start()
     {
@@ -46,9 +43,9 @@ public class FPSController : Singleton<FPSController>
         _jumpInput = false;
 
         _verticalVelocity = 0f;
-        _horizontalVelocity = Vector2.zero;
+        _isHorizontallyMoving = false;
 
-        _kyoteTimer = _kyoteMaxTime;
+        _kyoteTimer = _kyoteTime;
         _preJumpTimer = _preJumpMaxTime;
         _movement = Vector3.zero;
     }
@@ -73,27 +70,41 @@ public class FPSController : Singleton<FPSController>
         }
         else
         {
-            _kyoteTimer = _kyoteMaxTime;
+            _kyoteTimer = _kyoteTime;
         }
         _preJumpTimer -= Time.deltaTime;
-        _jumpWindow -= Time.deltaTime;
+        _jumpWindowTimer -= Time.deltaTime;
 
         if(_preJumpTimer < 0)
         {
             _preJumpTimer = 0;
         }
-        if(_jumpWindow < 0)
+        if(_jumpWindowTimer < 0)
         {
-            _jumpWindow = 0;
+            _jumpWindowTimer = 0;
         }
     }
 
+    Vector2 VerticalInputThreashHold()
+    {
+        float x = Input.GetAxis("Horizontal");
+        float y = Input.GetAxis("Vertical");
+
+        if(Mathf.Abs(x) <= _accThreshold)
+            x = 0;
+        
+        if(Mathf.Abs(y) <= _accThreshold)
+            y = 0;
+
+        return new Vector2(x, y);
+    }
     void HandleInput()
     {
-        _horizontalInput = (Input.GetAxis("Horizontal") * _orientation.right +  Input.GetAxis("Vertical") * _orientation.forward).normalized;
-        if(_horizontalInput.magnitude < _accThreshold)
-            _horizontalInput = Vector3.zero;
-        
+        Vector2 input = VerticalInputThreashHold();
+        Debug.Log(input);
+        _horizontalInput = input.x * _orientation.right +  input.y * _orientation.forward;
+
+
         _jumpInput = Input.GetButtonDown("Jump");
 
         if(_jumpInput)
@@ -105,7 +116,7 @@ public class FPSController : Singleton<FPSController>
             }
         }
 
-        if(_cc.isGrounded && _preJumpTimer > 0)//pre-jump
+        if(_cc.isGrounded && _preJumpTimer > 0)
         {
             OpenJumpWindow();
         }
@@ -113,15 +124,14 @@ public class FPSController : Singleton<FPSController>
 
     void OpenJumpWindow()
     {
-        _jumpWindow = _jumpWindowMax;
+        _jumpWindowTimer = _jumpWindow;
     }
 
     void CalculateMovement()
     {
-        _horizontalVelocity = new Vector2(_horizontalInput.x, _horizontalInput.z) * _horizontalSpeed;
         if(!_cc.isGrounded)
         {
-            if(_verticalVelocity > -20)
+            if(_verticalVelocity > -42)
             {
                 _verticalVelocity -= 9.81f * Time.deltaTime;
             }
@@ -133,17 +143,13 @@ public class FPSController : Singleton<FPSController>
 
         if (Input.GetButton("Jump"))
         {
-            if(_jumpWindow > 0)
+            if(_jumpWindowTimer > 0)
             {
-                _verticalVelocity += _jumpAcc * Time.deltaTime;
-            }
-            else
-            {
-                _verticalVelocity -= 5f * Time.deltaTime;
+                _verticalVelocity += _jumpAcceleration * Time.deltaTime;
             }
         }
 
-        _movement = new Vector3(_horizontalVelocity.x, _verticalVelocity, _horizontalVelocity.y);
+        _movement = new Vector3(_horizontalInput.x*_horizontalSpeed, _verticalVelocity, _horizontalInput.z*_horizontalSpeed);
 
     }
 }

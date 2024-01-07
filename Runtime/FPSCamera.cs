@@ -1,6 +1,6 @@
 using System;
 using UnityEngine;
-
+[RequireComponent(typeof(Camera))]
 public class FPSCamera : MonoBehaviour {
     [SerializeField]
     private float _sensitivity = 100f;
