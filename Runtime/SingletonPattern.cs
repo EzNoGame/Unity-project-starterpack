@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEditor;
 
-public abstract class StaticInstance<T> : MonoBehaviour where T : MonoBehaviour
-{
+/// <summary>
+/// provides a templates for singleton class
+/// </summary>
+/// <typeparam name="T"></typeparam>
+public abstract class Singleton<T> : MonoBehaviour where T : MonoBehaviour{
     protected static T _instance;
     public static T Instance { 
         get
@@ -24,9 +27,11 @@ public abstract class StaticInstance<T> : MonoBehaviour where T : MonoBehaviour
         Destroy(gameObject);
     }    
 }
-
-public abstract class Singleton<T> : StaticInstance<T> where T : MonoBehaviour{}
-
+/// <summary>
+/// any class that inherits from this class will  NOT be destroyed when the scene changes
+/// use to create system class
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public abstract class SingletonPersistent<T> : Singleton<T> where T : MonoBehaviour
 {
    protected virtual void Awake()

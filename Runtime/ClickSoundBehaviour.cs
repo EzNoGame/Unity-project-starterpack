@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-public class ClickSoundBehaviour : MonoBehaviour
+public abstract class ClickSoundBehaviour : MonoBehaviour
 {
     [SerializeField]
     private AudioClip clickSound;

@@ -15,7 +15,7 @@ public enum ButtonState
     Selected,
 }
 
-public class MyButton : ClickSoundBehaviour
+public class GameObjButton : ClickSoundBehaviour
 {
 
     protected bool _interactable = false, _zoomable = true;

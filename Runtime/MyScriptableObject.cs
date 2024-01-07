@@ -9,29 +9,29 @@ using System;
 [Serializable]
 public abstract class ScriptableObject_ID : ScriptableObject
 {
-    private static HashSet<string> usedIDs = new();
-
+    private static HashSet<string> s_usedIDs = new();
+    
     [SerializeField]
-    private string uniqueID;
+    private string _uniqueID;
 
-    public string ID => uniqueID;
+    public string ID => _uniqueID;
 
     public ScriptableObject_ID()
     {
-        if (string.IsNullOrEmpty(uniqueID))
-            uniqueID = GenerateUniqueID();
+        if (string.IsNullOrEmpty(_uniqueID))
+            _uniqueID = GenerateUniqueID();
     }
 
     private string GenerateUniqueID()
     {
         string newID = Guid.NewGuid().ToString();
 
-        while (usedIDs.Contains(newID))
+        while (s_usedIDs.Contains(newID))
         {
             newID = Guid.NewGuid().ToString();
         }
 
-        usedIDs.Add(newID);
+        s_usedIDs.Add(newID);
         return newID;
     }
 }
@@ -40,7 +40,7 @@ public abstract class ScriptableObject_ID : ScriptableObject
 /// The base class for all scriptable object that point to a entity
 /// </summary>
 [Serializable]
-public abstract class MyScriptableObject : ScriptableObject_ID
+public abstract class EntityScirptableObject : ScriptableObject_ID
 {
     [SerializeField]
     protected Sprite _icon;
