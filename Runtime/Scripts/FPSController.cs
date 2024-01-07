@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 [RequireComponent(typeof(CharacterController), typeof(Rigidbody))]
 public class FPSController : Singleton<FPSController>
@@ -19,6 +20,7 @@ public class FPSController : Singleton<FPSController>
     private float _accThreshold = 0.7f;
     [SerializeField]
     private Transform _orientation;
+
     private Vector3 _horizontalInput;
     private bool _jumpInput;
     private CharacterController _cc;
@@ -115,6 +117,11 @@ public class FPSController : Singleton<FPSController>
         _jumpWindowTimer = _jumpWindow;
     }
 
+    bool SprintCheck()
+    {
+        return Input.GetKey(KeyCode.LeftShift);
+    }
+
     void CalculateMovement()
     {
         if(!_cc.isGrounded)
@@ -137,10 +144,12 @@ public class FPSController : Singleton<FPSController>
             }
         }
 
+        bool isSprinting = SprintCheck();
+
         _movement = new Vector3(
-            _horizontalInput.x*(Input.GetKey(KeyCode.LeftShift)?_walkSpeed:_sprintSpeed), 
+            _horizontalInput.x*(isSprinting?_sprintSpeed:_walkSpeed), 
             _verticalVelocity, 
-            _horizontalInput.z*(Input.GetKey(KeyCode.LeftShift)?_walkSpeed:_sprintSpeed));
+            _horizontalInput.z*(isSprinting?_sprintSpeed:_walkSpeed));
 
     }
 }
