@@ -34,14 +34,14 @@ public class FPSController : Singleton<FPSController>
     public float JumpAcc => _jumpAcc;
     public float HorizontalMaxSpeed => _horizontalSpeed;
 
-    private CharacterController cc;
+    private CharacterController _cc;
     private float _verticalVelocity;
     private Vector2 _horizontalVelocity;
     private Vector3 _movement;
 
     void Start()
     {
-        cc = GetComponent<CharacterController>();
+        _cc = GetComponent<CharacterController>();
         _horizontalInput = new Vector3(0f, 0f, 0f);
         _jumpInput = false;
 
@@ -50,6 +50,7 @@ public class FPSController : Singleton<FPSController>
 
         _kyoteTimer = _kyoteMaxTime;
         _preJumpTimer = _preJumpMaxTime;
+        _movement = Vector3.zero;
     }
 
     void Update()
@@ -57,12 +58,16 @@ public class FPSController : Singleton<FPSController>
         JumpCountDown();
         HandleInput();
         CalculateMovement();
-        cc.Move(_movement * Time.deltaTime);
+        _cc.Move(_movement * Time.deltaTime);
+        if(transform.position.y < 0)
+        {
+            Debug.Log(transform.position);
+        }
     }
 
     void JumpCountDown()
     {
-        if(!cc.isGrounded)
+        if(!_cc.isGrounded)
         {
             _kyoteTimer -= Time.deltaTime;
         }
@@ -100,7 +105,7 @@ public class FPSController : Singleton<FPSController>
             }
         }
 
-        if(cc.isGrounded && _preJumpTimer > 0)//pre-jump
+        if(_cc.isGrounded && _preJumpTimer > 0)//pre-jump
         {
             OpenJumpWindow();
         }
@@ -114,7 +119,7 @@ public class FPSController : Singleton<FPSController>
     void CalculateMovement()
     {
         _horizontalVelocity = new Vector2(_horizontalInput.x, _horizontalInput.z) * _horizontalSpeed;
-        if(!cc.isGrounded)
+        if(!_cc.isGrounded)
         {
             if(_verticalVelocity > -20)
             {
@@ -125,14 +130,17 @@ public class FPSController : Singleton<FPSController>
         {
             _verticalVelocity = 0f;
         }
-        
-        if (Input.GetButton("Jump")&&_jumpWindow > 0f)
+
+        if (Input.GetButton("Jump"))
         {
-            _verticalVelocity += _jumpAcc * Time.deltaTime;
-        }
-        else
-        {
-            _verticalVelocity -= 5f * Time.deltaTime;
+            if(_jumpWindow > 0)
+            {
+                _verticalVelocity += _jumpAcc * Time.deltaTime;
+            }
+            else
+            {
+                _verticalVelocity -= 5f * Time.deltaTime;
+            }
         }
 
         _movement = new Vector3(_horizontalVelocity.x, _verticalVelocity, _horizontalVelocity.y);

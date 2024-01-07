@@ -2,6 +2,10 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
+/// <summary>
+/// put all the scriptable object into the "Assets/Resources" folder,
+/// this class will load them before game started, then retreive then by ID, name, or random
+/// </summary>
 public class ResourcesSystem : Singleton<ResourcesSystem>
 {
     private Dictionary<string, ScriptableObject_ID> _gameDataDictionary = new();
