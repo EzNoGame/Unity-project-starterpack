@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class MessageListener : MonoBehaviour
 {
-    private void OnEnable() {
+    protected virtual void OnEnable() {
         BroadcastSystem.BroadcastMessage += RecieveString;
     }
 
-    private void OnDisable() {
+    protected virtual void OnDisable() {
         BroadcastSystem.BroadcastMessage -= RecieveString;
     }
 
