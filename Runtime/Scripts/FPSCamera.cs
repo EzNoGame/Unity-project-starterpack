@@ -13,10 +13,36 @@ public class FPSCamera : MonoBehaviour {
 
     private float _xRotation, _yRotation;
 
+    private GameObject _objLookingAt;
+
     private void Start() 
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+    }
+    
+    private void FixedUpdate() {
+        RaycastHit hit;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 5f, 1<<3))
+        {
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * hit.distance, Color.red);
+            if(_objLookingAt == hit.rigidbody.gameObject)
+                return;
+            
+            _objLookingAt = hit.rigidbody.gameObject;
+            _objLookingAt.GetComponent<Interactable>().BeenSeen();
+
+        }
+        else
+        {
+            if(_objLookingAt != null)
+            {
+                _objLookingAt.GetComponent<Interactable>().BeenUnSeen();
+                _objLookingAt = null;
+            }
+            Debug.DrawRay(transform.position, transform.TransformDirection(Vector3.forward) * 5, Color.white);
+        }
     }
 
     private void LateUpdate() {
