@@ -14,11 +14,7 @@ public class PickableObject : Interactable
     private string InteractText = "press E to pickup";
     private GameObject holder;
     private PickableObjectState state = PickableObjectState.released;
-    public override void BeenIteracted(GameObject obj)
-    {
-        holder = obj;
-        state = PickableObjectState.picked;
-    }
+
     public override void BeenSeen()
     {
         BroadcastSystem.BroadcastMessage?.Invoke(InteractText);
@@ -28,13 +24,19 @@ public class PickableObject : Interactable
     {
         BroadcastSystem.BroadcastMessage?.Invoke("");
     }
-
+    public override void BeenIteracted(GameObject obj)
+    {
+        holder = obj;
+        state = PickableObjectState.picked;
+        BeenUnSeen();
+    }
     public override void BeenUndone()
     {
         state = PickableObjectState.released;
+        BeenSeen();
     }
 
-    private void Update() {
+    private void LateUpdate() {
         if(state == PickableObjectState.picked)
         {
             transform.position = holder.transform.position;

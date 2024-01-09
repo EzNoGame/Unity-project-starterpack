@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 [RequireComponent(typeof(Camera))]
-public class FPSCamera : MonoBehaviour {
+public class FPSCamera : Singleton<FPSCamera> {
     [SerializeField]
     private float _sensitivity = 100f;
 
@@ -10,6 +10,9 @@ public class FPSCamera : MonoBehaviour {
     
     [SerializeField, Header("transform in player to keep track the pos of camera")]
     private Transform _cameraHolder;
+
+    [SerializeField, Header("simulate of players hand")]
+    private Transform _hand;
 
     private float _xRotation, _yRotation;
 
@@ -58,5 +61,9 @@ public class FPSCamera : MonoBehaviour {
         _orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
 
         transform.position = _cameraHolder.transform.position;
+        _hand.position = transform.position + transform.TransformDirection(Vector3.forward) * 3f;
+
     }
+
+    public GameObject GetObjLookedAt() => _objLookingAt;
 }
