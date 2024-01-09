@@ -5,6 +5,14 @@ using UnityEngine;
 public class Hand : MonoBehaviour
 {
     private GameObject _holdingObj;
+    private void OnEnable() {
+        BroadcastSystem.ObjectDropped += Drop;    
+    }
+
+    private void OnDisable() {
+        BroadcastSystem.ObjectDropped -= Drop;
+    }
+
     private void Update() {
         if(Input.GetKeyDown(KeyCode.E))
         {
@@ -19,5 +27,10 @@ public class Hand : MonoBehaviour
                 _holdingObj = null;
             }
         }
+    }
+
+    private void Drop(GameObject obj)
+    {
+        _holdingObj = null;
     }
 }

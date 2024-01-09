@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 41714327}
   - component: {fileID: 41714326}
   - component: {fileID: 41714325}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Stairs
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10706,7 +10706,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 374373674}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Tarrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -10813,7 +10813,7 @@ GameObject:
   - component: {fileID: 539063839}
   - component: {fileID: 539063838}
   - component: {fileID: 539063837}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Plane
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -11016,7 +11016,7 @@ GameObject:
   - component: {fileID: 669753908}
   - component: {fileID: 669753907}
   - component: {fileID: 669753906}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Door
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -23978,13 +23978,17 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4365344484862505004, guid: f8a448f0a575ecf4fb54c78075ea08c8, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5599637764952134163, guid: f8a448f0a575ecf4fb54c78075ea08c8, type: 3}
       propertyPath: m_Name
       value: Pickable Cube
       objectReference: {fileID: 0}
     - target: {fileID: 5868666986515546475, guid: f8a448f0a575ecf4fb54c78075ea08c8, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.01
+      value: 1.45
       objectReference: {fileID: 0}
     - target: {fileID: 5868666986515546475, guid: f8a448f0a575ecf4fb54c78075ea08c8, type: 3}
       propertyPath: m_LocalPosition.y
@@ -23992,7 +23996,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5868666986515546475, guid: f8a448f0a575ecf4fb54c78075ea08c8, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -23.22
+      value: -19.6
       objectReference: {fileID: 0}
     - target: {fileID: 5868666986515546475, guid: f8a448f0a575ecf4fb54c78075ea08c8, type: 3}
       propertyPath: m_LocalRotation.w

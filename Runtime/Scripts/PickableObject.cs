@@ -14,7 +14,7 @@ public class PickableObject : Interactable
     private string InteractText = "press E to pickup";
     private GameObject holder;
     private PickableObjectState state = PickableObjectState.released;
-    private float _maxDistance = 5f;
+    private float _maxDistance = 5f, _minDistance = 0.01f;
 
     public override void BeenSeen()
     {
@@ -30,19 +30,22 @@ public class PickableObject : Interactable
         holder = obj;
         state = PickableObjectState.picked;
         BroadcastSystem.ObjectPickedUp?.Invoke(gameObject);
+        // GetComponent<Rigidbody>().isKinematic = true;
         GetComponent<Rigidbody>().useGravity = false;
     }
     public override void BeenUndone()
     {
         state = PickableObjectState.released;
         BroadcastSystem.ObjectDropped?.Invoke(gameObject);
+        // GetComponent<Rigidbody>().isKinematic = false;
         GetComponent<Rigidbody>().useGravity = true;
     }
 
     private void FixedUpdate() {
-        if(state == PickableObjectState.picked)
+        if(state == PickableObjectState.picked && Vector3.Distance(transform.position, holder.transform.position) > _minDistance)
         {
-            transform.position = Vector3.MoveTowards(transform.position, holder.transform.position, 7*Time.deltaTime);
+            GetComponent<Rigidbody>().velocity = Vector3.zero;
+            GetComponent<Rigidbody>().AddForce((holder.transform.position - transform.position)*0.5f, ForceMode.Impulse);
         }
         if(holder!=null && Vector3.Distance(transform.position, holder.transform.position) > _maxDistance)
         {

@@ -61,7 +61,16 @@ public class FPSCamera : Singleton<FPSCamera> {
         _orientation.rotation = Quaternion.Euler(0, _yRotation, 0);
 
         transform.position = _cameraHolder.transform.position;
-        _hand.position = transform.position + transform.TransformDirection(Vector3.forward) * 3f;
+
+        float distance = 3f;
+        RaycastHit hit;
+        // Does the ray intersect any objects excluding the player layer
+        if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, 3f, 1<<6))
+        {
+            distance = hit.distance;
+        }
+        
+        _hand.position = transform.position + transform.TransformDirection(Vector3.forward) * distance;
 
     }
 
